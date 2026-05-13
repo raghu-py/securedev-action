@@ -1,0 +1,84 @@
+name: 'SecureDev Action'
+description: 'Self-contained Docker GitHub Action that scans code and configuration files for security risks.'
+author: 'Raghu Soni'
+
+inputs:
+  path:
+    description: 'Path to scan. Use . for the checked-out repository root.'
+    required: false
+    default: '.'
+  fail-on:
+    description: 'Minimum severity that fails the action. Allowed: critical, high, medium, low, none.'
+    required: false
+    default: 'critical'
+  output-dir:
+    description: 'Directory where JSON, SARIF, and Markdown reports are written.'
+    required: false
+    default: 'securedev-results'
+  output-format:
+    description: 'Report formats to generate. Allowed: all, json, sarif, markdown, json,sarif, etc.'
+    required: false
+    default: 'all'
+  include:
+    description: 'Comma-separated glob patterns to include. Empty means all files under path.'
+    required: false
+    default: ''
+  exclude:
+    description: 'Comma-separated glob patterns to exclude in addition to built-in safe defaults.'
+    required: false
+    default: ''
+  max-file-size-kb:
+    description: 'Maximum file size to scan, in KB.'
+    required: false
+    default: '1024'
+  show-snippets:
+    description: 'Include matching source snippets in reports. Allowed: true, false.'
+    required: false
+    default: 'true'
+  annotations:
+    description: 'Create GitHub workflow annotations for findings. This does not post PR comments.'
+    required: false
+    default: 'true'
+
+outputs:
+  result:
+    description: 'pass or fail'
+  findings_count:
+    description: 'Total number of findings.'
+  critical_count:
+    description: 'Number of critical findings.'
+  high_count:
+    description: 'Number of high findings.'
+  medium_count:
+    description: 'Number of medium findings.'
+  low_count:
+    description: 'Number of low findings.'
+  report_json:
+    description: 'Path to the JSON report, when generated.'
+  report_sarif:
+    description: 'Path to the SARIF report, when generated.'
+  report_markdown:
+    description: 'Path to the Markdown report, when generated.'
+
+runs:
+  using: 'docker'
+  image: 'Dockerfile'
+  args:
+    - '--path'
+    - ${{ inputs.path }}
+    - '--fail-on'
+    - ${{ inputs.fail-on }}
+    - '--output-dir'
+    - ${{ inputs.output-dir }}
+    - '--output-format'
+    - ${{ inputs.output-format }}
+    - '--include'
+    - ${{ inputs.include }}
+    - '--exclude'
+    - ${{ inputs.exclude }}
+    - '--max-file-size-kb'
+    - ${{ inputs.max-file-size-kb }}
+    - '--show-snippets'
+    - ${{ inputs.show-snippets }}
+    - '--annotations'
+    - ${{ inputs.annotations }}
